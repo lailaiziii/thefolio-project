@@ -29,3 +29,11 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
 console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+app.use(cors({
+origin: [
+'http://localhost:3000',
+'https://thefolio-project.vercel.app', // ← your Vercel URL (update after deployment)
+],
+credentials: true,
+}));
