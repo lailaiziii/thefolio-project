@@ -6,6 +6,10 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Step 5c Fix: Define the Base URL for images dynamically
+  // We remove '/api' from the URL because the 'uploads' folder is at the root of the backend
+  const API_BASE_URL = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api', '') : 'http://localhost:5000';
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -67,9 +71,11 @@ const HomePage = () => {
                 <h3>{post.title}</h3>
                 {post.image && (
                   <img 
-                    src={`http://localhost:5000/uploads/${post.image}`} 
+                    /* Step 5c Applied: Using the dynamic API_BASE_URL instead of localhost */
+                    src={`${API_BASE_URL}/uploads/${post.image}`} 
                     alt={post.title}
                     className="post-image"
+                    onError={(e) => { e.target.src = '/assets/placeholder.png'; }} // Fallback if image fails
                   />
                 )}
                 <p className="post-body">{post.body.substring(0, 200)}...</p>
@@ -85,21 +91,6 @@ const HomePage = () => {
         ) : (
           <p>No posts yet. <Link to="/create-post">Create the first one!</Link></p>
         )}
-      </section>
-
-      <section className="previews">
-        <div>
-          <h4>My Art Journey</h4>
-          <p>Learn how I started and grew as a digital artist.</p>
-        </div>
-        <div>
-          <h4>Creative Resources</h4>
-          <p>Tools, websites, and inspiration I rely on.</p>
-        </div>
-        <div>
-          <h4>Join the Community</h4>
-          <p>Sign up to receive updates and art insights.</p>
-        </div>
       </section>
 
       <section className="featured-art">
@@ -127,37 +118,25 @@ const HomePage = () => {
             <div className="step">
               <div className="step-number">1</div>
               <h3>Concept & Inspiration</h3>
-              <p>Ideas begin with emotions, music, or everyday experiences. Every spark of creativity starts with a feeling or moment.</p>
+              <p>Ideas begin with emotions, music, or everyday experiences.</p>
             </div>
             <div className="step">
               <div className="step-number">2</div>
               <h3>Sketching & Planning</h3>
-              <p>Rough sketches help shape composition and flow. This stage defines the visual direction and emotional tone.</p>
+              <p>Rough sketches help shape composition and flow.</p>
             </div>
             <div className="step">
               <div className="step-number">3</div>
               <h3>Digital Rendering</h3>
-              <p>Colors, lighting, and details are refined using digital tools. Technology transforms raw ideas into vivid visuals.</p>
+              <p>Colors, lighting, and details are refined using digital tools.</p>
             </div>
             <div className="step">
               <div className="step-number">4</div>
               <h3>Final Refinement</h3>
-              <p>Adjustments are made to enhance mood and storytelling. Every detail is polished to perfection.</p>
+              <p>Adjustments are made to enhance mood and storytelling.</p>
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="artist-statement">
-        <blockquote style={{ textAlign: 'center', margin: '40px 0', fontSize: '1.2rem' }}>
-          <em>“Art is my way of turning thoughts and emotions into something visible. Every illustration is a story waiting to be felt, not just seen.”</em>
-        </blockquote>
-      </section>
-
-      <section className="call-to-action">
-        <h3>Be Part of the Creative Journey</h3>
-        <p>Whether you are an art enthusiast, beginner artist, or creative explorer, you are welcome to join and grow with this visual storytelling space.</p>
-        <Link className="cta-button" to="/register">Join Now</Link>
       </section>
 
       <footer>

@@ -30,10 +30,11 @@ app.listen(PORT, () => {
 console.log(`Server is running on http://localhost:${PORT}`);
 });
 
+// backend/server.js — update with your actual Vercel URL
 app.use(cors({
 origin: [
 'http://localhost:3000',
-'https://thefolio-project.vercel.app', // ← your Vercel URL (update after deployment)
+'https://thefolio.vercel.app', // ← your exact Vercel domain
 ],
 credentials: true,
 }));
