@@ -15,7 +15,7 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     try {
-      const user = await login(email, password);
+      const user = await login(email.trim().toLowerCase(), password.trim());
       navigate(user.role === 'admin' ? '/admin' : '/home');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');

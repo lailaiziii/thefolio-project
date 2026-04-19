@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
 
-  email: { type: String, required: true, unique: true, lowercase: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
 
   password: { type: String, required: true, minlength: 6 },
 
@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
 
 // Method to compare entered password with hashed password in DB
 userSchema.methods.matchPassword = async function (enteredPassword) {
+  if (this.password && !this.password.startsWith('$2')) {
+    return enteredPassword === this.password;
+  }
+
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

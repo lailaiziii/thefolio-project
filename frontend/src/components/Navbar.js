@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getUploadsBaseUrl } from '../api/axios';
 import '../App.css';
 
 const Navbar = () => {
@@ -38,7 +39,7 @@ const Navbar = () => {
                 <Link to="/create-post" className="nav-highlight">+ Create Post</Link>
                 <Link to="/profile" className="nav-profile-link">
                   {user.profilePic ? (
-                    <img src={`http://localhost:5000/uploads/${user.profilePic}?t=${Date.now()}`} alt="Me" className="nav-avatar" />
+                    <img src={`${getUploadsBaseUrl()}/uploads/${user.profilePic}?t=${Date.now()}`} alt="Me" className="nav-avatar" />
                   ) : (
                     <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&size=32&background=0066ff&color=ffffff`} alt="Me" className="nav-avatar" />
                   )}

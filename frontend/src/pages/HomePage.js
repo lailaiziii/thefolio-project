@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import API from '../api/axios';
+import API, { getUploadsBaseUrl } from '../api/axios';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Step 5c Fix: Define the Base URL for images dynamically
-  // We remove '/api' from the URL because the 'uploads' folder is at the root of the backend
-  const API_BASE_URL = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api', '') : 'http://localhost:5000';
+  const uploadsBaseUrl = getUploadsBaseUrl();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -71,8 +69,7 @@ const HomePage = () => {
                 <h3>{post.title}</h3>
                 {post.image && (
                   <img 
-                    /* Step 5c Applied: Using the dynamic API_BASE_URL instead of localhost */
-                    src={`${API_BASE_URL}/uploads/${post.image}`} 
+                    src={`${uploadsBaseUrl}/uploads/${post.image}`} 
                     alt={post.title}
                     className="post-image"
                     onError={(e) => { e.target.src = '/assets/placeholder.png'; }} // Fallback if image fails

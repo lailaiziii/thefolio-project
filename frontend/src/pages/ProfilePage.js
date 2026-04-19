@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import API from '../api/axios';
+import API, { getUploadsBaseUrl } from '../api/axios';
 import '../App.css';
 
 const ProfilePage = () => {
@@ -79,7 +79,7 @@ const ProfilePage = () => {
   };
 
   const picSrc = user?.profilePic
-    ? `http://localhost:5000/uploads/${user.profilePic}`
+    ? `${getUploadsBaseUrl()}/uploads/${user.profilePic}`
     : `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&size=140&background=0066ff&color=ffffff`;
 
   const handleImageError = (e) => {

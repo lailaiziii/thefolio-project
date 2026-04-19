@@ -2,6 +2,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
+import { getUploadsBaseUrl } from '../api/axios';
 import '../App.css';
 
 const PostPage = () => {
@@ -116,7 +117,7 @@ const PostPage = () => {
         <article className="post-card-detailed">
           {post.image && (
             <div className="post-image-frame">
-              <img src={`http://localhost:5000/uploads/${post.image}`} alt={post.title} className="full-post-img" />
+              <img src={`${getUploadsBaseUrl()}/uploads/${post.image}`} alt={post.title} className="full-post-img" />
             </div>
           )}
 

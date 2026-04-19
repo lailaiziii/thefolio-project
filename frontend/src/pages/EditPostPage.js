@@ -2,6 +2,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
+import { getUploadsBaseUrl } from '../api/axios';
 import '../App.css';
 
 const EditPostPage = () => {
@@ -155,7 +156,7 @@ const EditPostPage = () => {
                     </>
                   ) : currentImage ? (
                     <>
-                      <img src={`http://localhost:5000/uploads/${currentImage}`} alt="Current artwork" className="preview-image" />
+                      <img src={`${getUploadsBaseUrl()}/uploads/${currentImage}`} alt="Current artwork" className="preview-image" />
                       <p className="preview-caption">Current image.</p>
                     </>
                   ) : (

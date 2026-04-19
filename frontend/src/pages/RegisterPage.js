@@ -11,14 +11,29 @@ const RegisterPage = () => {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setError('');
+
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      password: form.password.trim(),
+    };
+
     try {
-      const { data } = await API.post('/auth/register', form);
+      const { data } = await API.post('/auth/register', payload);
       localStorage.setItem('token', data.token);
       navigate('/home');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed.');
+      const message =
+        err.response?.data?.message ||
+        (err.code === 'ECONNABORTED'
+          ? 'Registration timed out. The server took too long to respond.'
+          : err.message === 'Network Error'
+            ? `Cannot reach the server at ${API.defaults.baseURL}.`
+            : 'Registration failed. Check that the backend server is running and try again.');
+
+      setError(message);
     }
   };
 

@@ -1,40 +1,66 @@
-// backend/server.js
-require('dotenv').config(); // Load .env variables FIRST
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+
 const connectDB = require('./config/db');
-// Import routes (you will create these files in the next steps)
 const authRoutes = require('./routes/auth.routes');
 const postRoutes = require('./routes/post.routes');
 const commentRoutes = require('./routes/comment.routes');
 const adminRoutes = require('./routes/admin.routes');
+
 const app = express();
-connectDB(); // Connect to MongoDB
-// ── Middleware ─────────────────────────────────────────────────
-// Allow React (port 3000) to call this server
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
-// Parse incoming JSON request bodies
+const PORT = process.env.PORT || 5000;
+
+connectDB();
+
+const isAllowedOrigin = (origin = '') => {
+  if (!origin) return true;
+  if (origin === 'http://localhost:3000') return true;
+
+  try {
+    const { hostname, protocol } = new URL(origin);
+    if (protocol === 'https:' && hostname.endsWith('.vercel.app')) {
+      return true;
+    }
+  } catch (error) {
+    return false;
+  }
+
+  return false;
+};
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (isAllowedOrigin(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
-// Serve uploaded image files as public URLs
-// e.g. http://localhost:5000/uploads/my-image.jpg
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// ── Routes ────────────────────────────────────────────────────
+
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/admin', adminRoutes);
-// ── Start Server ──────────────────────────────────────────────
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-console.log(`Server is running on http://localhost:${PORT}`);
-});
 
-// backend/server.js — update with your actual Vercel URL
-app.use(cors({
-origin: [
-'http://localhost:3000',
-'https://thefolio.vercel.app', // ← your exact Vercel domain
-],
-credentials: true,
-}));
+const frontendBuildPath = path.resolve(__dirname, '..', 'frontend', 'build');
+if (fs.existsSync(frontendBuildPath)) {
+  app.use(express.static(frontendBuildPath));
+  app.get(/^(?!\/api\/|\/uploads\/).*/, (req, res) => {
+    return res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
+}
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
