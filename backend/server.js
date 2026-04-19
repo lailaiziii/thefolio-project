@@ -34,16 +34,17 @@ const isAllowedOrigin = (origin = '') => {
 
 app.use(
   cors({
-    origin: [
-      'http://localhost:3000',
-      'https://thefolio-project-b24da7q6g-elai.vercel.app', // Your specific deployment
-      /\.vercel\.app$/ // This matches any Vercel preview link
-    ],
+    origin(origin, callback) {
+      if (isAllowedOrigin(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
+
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
