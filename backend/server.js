@@ -34,14 +34,11 @@ const isAllowedOrigin = (origin = '') => {
 
 app.use(
   cors({
-    origin(origin, callback) {
-      if (isAllowedOrigin(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
+    origin: [
+      'http://localhost:3000', 
+      'https://thefolio-project-pyqhsv6e6-elai.vercel.app' // Add your EXACT Vercel URL here
+    ],
+    credentials: true
   })
 );
 
